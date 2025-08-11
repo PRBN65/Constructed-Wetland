@@ -5,17 +5,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wetland Design Calculator</title>
     <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(to bottom right, #e6f7f1, #d1f0d8);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2f6d4f;
+            padding: 20px;
+            margin-bottom: 10px;
+        }
+
+        form {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #bbb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: #2f6d4f;
+            outline: none;
+            box-shadow: 0px 0px 5px rgba(47, 109, 79, 0.3);
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            background: #2f6d4f;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #25835d;
+        }
+
+        #results {
+            max-width: 500px;
+            margin: 20px auto;
+            background: #f8fff8;
+            padding: 15px 20px;
+            border: 1px solid #cce7d4;
+            border-radius: 8px;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+            color: #2f6d4f;
+            font-weight: bold;
+        }
+
         #plot {
             display: flex;
             justify-content: center;
             align-items: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
         }
+
         #plot div {
             background-color: lightgreen;
-            border: 1px solid green;
+            border: 2px solid green;
             margin: 5px;
             display: inline-block;
             text-align: center;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            color: #2f4f2f;
+            box-shadow: 0px 2px 4px rgba(0,0,0,0.15);
+        }
+
+        @media (max-width: 600px) {
+            form, #results {
+                width: 90%;
+            }
         }
     </style>
 </head>
@@ -24,22 +113,61 @@
     
     <form id="inputForm">
         <label for="population">Population size:</label>
-        <input type="number" id="population" required><br>
+        <input type="number" id="population" required>
+
         <label for="wastewater">Wastewater per person (liters/day):</label>
-        <input type="number" id="wastewater" required><br>
+        <input type="number" id="wastewater" required>
+
         <label for="Ci">Influent BOD (mg/L):</label>
-        <input type="number" id="Ci" required><br>
+        <input type="number" id="Ci" required>
+
         <label for="Ce">Effluent BOD (mg/L):</label>
-        <input type="number" id="Ce" required><br>
+        <input type="number" id="Ce" required>
+
         <label for="wetlandType">Wetland type:</label>
         <select id="wetlandType">
             <option value="HF">HF</option>
             <option value="VF">VF</option>
-        </select><br>
+        </select>
+
         <button type="button" id="calculateBtn">Calculate</button>
     </form>
+
     <div id="results"></div>
     <div id="plot"></div>
-    <script src="app.js"></script>
+
+    <script>
+        document.getElementById("calculateBtn").addEventListener("click", function () {
+            let population = parseFloat(document.getElementById("population").value);
+            let wastewater = parseFloat(document.getElementById("wastewater").value);
+            let Ci = parseFloat(document.getElementById("Ci").value);
+            let Ce = parseFloat(document.getElementById("Ce").value);
+            let wetlandType = document.getElementById("wetlandType").value;
+
+            if (isNaN(population) || isNaN(wastewater) || isNaN(Ci) || isNaN(Ce)) {
+                document.getElementById("results").innerHTML = "⚠ Please enter all values correctly.";
+                return;
+            }
+
+            // Example calculation (replace with your real formula)
+            let flowRate = population * wastewater; // liters/day
+            let area = (flowRate * (Ci - Ce)) / 1000; // Just a placeholder formula
+
+            document.getElementById("results").innerHTML = 
+                `<strong>Flow Rate:</strong> ${flowRate.toFixed(2)} L/day<br>` +
+                `<strong>Estimated Wetland Area:</strong> ${area.toFixed(2)} m²<br>` +
+                `<strong>Type:</strong> ${wetlandType}`;
+
+            // Generate a simple plot
+            let plotDiv = document.getElementById("plot");
+            plotDiv.innerHTML = "";
+            let plotCount = Math.min(Math.max(Math.round(area / 10), 1), 20);
+            for (let i = 0; i < plotCount; i++) {
+                let cell = document.createElement("div");
+                cell.textContent = `Cell ${i + 1}`;
+                plotDiv.appendChild(cell);
+            }
+        });
+    </script>
 </body>
 </html>
