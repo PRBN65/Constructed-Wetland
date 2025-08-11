@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wetland Design Calculator</title>
-    <style>
+   <style>
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
             background: linear-gradient(to bottom right, #e6f7f1, #d1f0d8);
@@ -113,61 +113,23 @@
     
     <form id="inputForm">
         <label for="population">Population size:</label>
-        <input type="number" id="population" required>
-
+        <input type="number" id="population" required><br>
         <label for="wastewater">Wastewater per person (liters/day):</label>
-        <input type="number" id="wastewater" required>
-
+        <input type="number" id="wastewater" required><br>
         <label for="Ci">Influent BOD (mg/L):</label>
-        <input type="number" id="Ci" required>
-
+        <input type="number" id="Ci" required><br>
         <label for="Ce">Effluent BOD (mg/L):</label>
-        <input type="number" id="Ce" required>
-
+        <input type="number" id="Ce" required><br>
         <label for="wetlandType">Wetland type:</label>
         <select id="wetlandType">
             <option value="HF">HF</option>
             <option value="VF">VF</option>
-        </select>
-
+        </select><br>
         <button type="button" id="calculateBtn">Calculate</button>
     </form>
-
     <div id="results"></div>
     <div id="plot"></div>
-
-    <script>
-        document.getElementById("calculateBtn").addEventListener("click", function () {
-            let population = parseFloat(document.getElementById("population").value);
-            let wastewater = parseFloat(document.getElementById("wastewater").value);
-            let Ci = parseFloat(document.getElementById("Ci").value);
-            let Ce = parseFloat(document.getElementById("Ce").value);
-            let wetlandType = document.getElementById("wetlandType").value;
-
-            if (isNaN(population) || isNaN(wastewater) || isNaN(Ci) || isNaN(Ce)) {
-                document.getElementById("results").innerHTML = "⚠ Please enter all values correctly.";
-                return;
-            }
-
-            // Example calculation (replace with your real formula)
-            let flowRate = population * wastewater; // liters/day
-            let area = (flowRate * (Ci - Ce)) / 1000; // Just a placeholder formula
-
-            document.getElementById("results").innerHTML = 
-                `<strong>Flow Rate:</strong> ${flowRate.toFixed(2)} L/day<br>` +
-                `<strong>Estimated Wetland Area:</strong> ${area.toFixed(2)} m²<br>` +
-                `<strong>Type:</strong> ${wetlandType}`;
-
-            // Generate a simple plot
-            let plotDiv = document.getElementById("plot");
-            plotDiv.innerHTML = "";
-            let plotCount = Math.min(Math.max(Math.round(area / 10), 1), 20);
-            for (let i = 0; i < plotCount; i++) {
-                let cell = document.createElement("div");
-                cell.textContent = `Cell ${i + 1}`;
-                plotDiv.appendChild(cell);
-            }
-        });
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
+
