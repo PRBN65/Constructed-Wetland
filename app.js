@@ -13,7 +13,7 @@ function calculateCrossSection(Qs, Kf, slope) {
     return Qs / (Kf * slope);
 }
 
-function adjustParallelSections(area, maxWidth, depth, sections=3) {
+function adjustParallelSections(area, maxWidth, depth, sections = 3) {
     const sectionArea = area / sections;
     const width = maxWidth;
     const length = sectionArea / width;
@@ -38,32 +38,33 @@ document.getElementById('calculateBtn').addEventListener('click', function() {
     const KBOD = wetlandType === 'HF' ? KBOD_HF : KBOD_VF;
     const area = calculateArea(Q, Ci, Ce, KBOD);
     const Ac = calculateCrossSection(Qs, Kf, slope);
-    const width = Ac / depth;
-    const length = area / width;
+    let width = Ac / depth;
+    let length = area / width;
 
     let sections = 1;
+    let sectionArea = area;
     let adjWidth = width;
     let adjLength = length;
-    let sectionArea = area;
 
     if (width > maxWidth) {
         sections = 3;
-        [sectionArea, adjWidth, adjLength] = adjustParallelSections(area, maxWidth, depth, sections);
+        [sectionArea, adjWidth, adjLength] =
+            adjustParallelSections(area, maxWidth, depth, sections);
     }
 
     const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = `
         <h2>Constructed Wetland Design Summary</h2>
-        <p>Daily wastewater flow: ${Q.toFixed(2)} m^3/day</p>
-        <p>Required wetland area: ${area.toFixed(2)} m^2</p>
-        <p>Cross-sectional area: ${Ac.toFixed(2)} m^2</p>
+        <p>Daily wastewater flow: ${Q.toFixed(2)} m³/day</p>
+        <p>Required wetland area: ${area.toFixed(2)} m²</p>
+        <p>Cross-sectional area: ${Ac.toFixed(2)} m²</p>
         <p>Initial width: ${width.toFixed(2)} m</p>
     `;
 
     if (sections > 1) {
         resultsDiv.innerHTML += `
             <p>Adjusted for ${sections} parallel sections:</p>
-            <p>Each section area: ${sectionArea.toFixed(2)} m^2</p>
+            <p>Each section area: ${sectionArea.toFixed(2)} m²</p>
             <p>Width per section: ${adjWidth.toFixed(2)} m</p>
             <p>Length per section: ${adjLength.toFixed(2)} m</p>
         `;
@@ -77,13 +78,32 @@ document.getElementById('calculateBtn').addEventListener('click', function() {
 
     const plotDiv = document.getElementById('plot');
     plotDiv.innerHTML = '';
-    const scale = 20;  
+    const scale = 20;
 
     for (let i = 0; i < sections; i++) {
         const sectionDiv = document.createElement('div');
         sectionDiv.style.width = `${adjWidth * scale}px`;
         sectionDiv.style.height = `${adjLength * scale}px`;
-        sectionDiv.innerText = `Section ${i+1}`;
+        sectionDiv.style.position = 'relative';
+        sectionDiv.style.backgroundColor = 'lightgreen';
+        sectionDiv.style.border = '1px solid green';
+        sectionDiv.style.margin = '5px';
+        sectionDiv.style.display = 'inline-block';
+
+        const label = document.createElement('div');
+        label.style.position = 'absolute';
+        label.style.top = '5px';
+        label.style.left = '5px';
+        label.style.backgroundColor = 'rgba(255,255,255,0.8)';
+        label.style.padding = '2px 4px';
+        label.style.fontSize = '12px';
+        label.style.lineHeight = '1.2';
+        label.innerHTML = `
+            Section ${i + 1}<br>
+            ${adjWidth.toFixed(2)} m × ${adjLength.toFixed(2)} m
+        `;
+
+        sectionDiv.appendChild(label);
         plotDiv.appendChild(sectionDiv);
     }
 });
