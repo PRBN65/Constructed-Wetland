@@ -27,6 +27,12 @@ document.getElementById('calculateBtn').addEventListener('click', function() {
     const Ce = parseFloat(document.getElementById('Ce').value);
     const wetlandType = document.getElementById('wetlandType').value;
 
+    if (Ci<Ce){
+        alert('Influent BOD should be greater than effluent BOD');
+        return;
+        
+    }
+
     if (isNaN(population) || isNaN(wastewater) || isNaN(Ci) || isNaN(Ce) ||
         population <= 0 || wastewater <= 0 || Ci <= 0 || Ce <= 0) {
         alert('Please enter valid positive numbers for all fields.');
@@ -107,3 +113,4 @@ document.getElementById('calculateBtn').addEventListener('click', function() {
         plotDiv.appendChild(sectionDiv);
     }
 });
+
